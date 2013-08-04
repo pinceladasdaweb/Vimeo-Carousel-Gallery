@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Vimeo Carousel Gallery</title>
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
+
+        <div class="gallery"></div>
+        
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script src="assets/js/lib.js"></script>
+        <script>
+            var data = {
+                "main" : "http://vimeo.com/70161501",
+                "videos" : [
+                    { "url" : "https://vimeo.com/71495477" },
+                    { "url" : "https://vimeo.com/70775770" },
+                    { "url" : "https://vimeo.com/71238762" },
+                    { "url" : "https://vimeo.com/70388552" },
+                    { "url" : "https://vimeo.com/67890000" },
+                    { "url" : "https://vimeo.com/70777838" },
+                    { "url" : "https://vimeo.com/38931673" },
+                    { "url" : "https://vimeo.com/70286906" }
+                ]
+            }
+            
+            Vimeo.init({
+                container: $('.gallery')
+            });
+        </script>
+    </body>
+</html>
