@@ -23,11 +23,11 @@ var Vimeo = {
             videos      = data.videos,
             videosUrl   = [];
 
-        if(main){
+        if (main) {
             $(self.container).append(featured).append(carousel);
             featured.html(function(){
                 var mainVideo = self.getId(data.main);
-                return '<iframe src="http://player.vimeo.com/video/'+mainVideo+'?autoplay=0" width="960" height="540" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+                return '<iframe src="http://player.vimeo.com/video/'+mainVideo+'" width="960" height="540" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
             });
         } else {
             throw new Error('The url of the video page is wrong or not defined');
@@ -49,16 +49,7 @@ var Vimeo = {
             });
         }
 
-        $(document.body).on('click', '.thumb', function(e){
-            e.preventDefault();
-            var href = $(this).find('a').attr('href');
-
-            featured.find('iframe').attr({'src' : 'http://player.vimeo.com/video/'+self.getId(href)+'?autoplay=1'});
-            carousel.find('li').removeClass('current');
-            $(this).addClass('current');
-        });
-
-        $(window).load(function(){
+        $(window).load(function() {
             self.carousel();
         })
     },
@@ -68,12 +59,14 @@ var Vimeo = {
             return vid[3];
         }
     },
-    carousel: function(){
-        var slider      = $('.slider'),
+    carousel: function() {
+        var self        = this,
+            slider      = $('.slider'),
             controll    = $('.carousel-container .controll'),
+            featured    = $('.featured'),
             photosLen   = slider.find('li').length;
 
-        if(photosLen > 3){
+        if (photosLen > 3) {
             var itemWidth = $('.slider li').outerWidth(true);
 
             controll.css({display: 'block'});
@@ -102,6 +95,15 @@ var Vimeo = {
                     });
                 }
             });
-        }
+        };
+
+        $(document.body).on('click', '.thumb', function(e) {
+            e.preventDefault();
+            var href = $(this).find('a').attr('href');
+
+            featured.find('iframe').attr({'src' : 'http://player.vimeo.com/video/'+self.getId(href)+'?autoplay=1'});
+            slider.find('li').removeClass('current');
+            $(this).addClass('current');
+        });
     }
 }
