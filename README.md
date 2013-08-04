@@ -6,11 +6,14 @@ Show videos from Vimeo into a chic gallery with jQuery. Unlike from Youtube, Vim
 ##Usage
 
 1. Paste right before your page's closing `</body>` tag
+
 ```html
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <script type="text/javascript" src="assets/js/lib.js"></script>
 ```
+
 2. From within a script tag or a JS file
+
 ```javascript
 var data = {
     "main" : "http://vimeo.com/70161501",
