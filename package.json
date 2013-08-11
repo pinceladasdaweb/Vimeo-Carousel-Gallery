@@ -1,0 +1,13 @@
+{
+  "name": "Vimeo-Carousel-Gallery",
+  "version": "1.0.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-cssmin": "~0.5.0"
+  },
+  "author": {
+    "name": "Pedro Rogerio",
+    "url": "https://github.com/pinceladasdaweb"
+  }
+}
