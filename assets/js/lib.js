@@ -3,7 +3,7 @@
 Vimeo Carousel Gallery
 --------------------------------
 + https://github.com/pinceladasdaweb/Vimeo-Carousel-Gallery
-+ version 1.0
++ version 1.1
 + Copyright 2013 Pedro Rogerio
 + Licensed under the MIT license
 
@@ -11,17 +11,16 @@ Vimeo Carousel Gallery
 */
 
 var Vimeo = {
-    init: function(config) {
+    init: function (config) {
         this.container = config.container;
         this.fetch();
     },
     fetch: function() {
-        var self        = this,
-            carousel    = $('<div class="carousel-container cf"><span class="shadow shadow-left"></span><span class="prev controll"></span><div class="carousel-inner"><ul class="slider cf"></ul></div><span class="next controll"></span><span class="shadow shadow-right"></span></div>'),
-            featured    = $('<div class="featured"></div>'),
-            main        = self.getId(data.main),
-            videos      = data.videos,
-            videosUrl   = [];
+        var self     = this,
+            carousel = $('<div class="carousel-container cf"><span class="shadow shadow-left"></span><span class="prev controll"></span><div class="carousel-inner"><ul class="slider cf"></ul></div><span class="next controll"></span><span class="shadow shadow-right"></span></div>'),
+            featured = $('<div class="featured"></div>'),
+            main     = self.getId(data.main),
+            videos   = data.videos;
 
         if (main) {
             $(self.container).append(featured).append(carousel);
@@ -34,37 +33,33 @@ var Vimeo = {
         }
 
         for (var i = 0, l = videos.length; i < l; i += 1) {
-            videosUrl.push(videos[i].url);
-        }
+            var id = self.getId(videos[i].url);
 
-        for (var i = 0, l = videosUrl.length; i < l; i += 1) {
-            var id = self.getId(videosUrl[i]);
-
-            $.getJSON('http://www.vimeo.com/api/v2/video/' + id + '.json?callback=?', {format: "json"}, function(data) {
-                var url     = data[0].url,
-                    thumb   = data[0].thumbnail_large,
-                    title   = data[0].title;
+            $.getJSON('http://www.vimeo.com/api/v2/video/' + id + '.json?callback=?', {format: "json"}, function (data) {
+                var url   = data[0].url,
+                    thumb = data[0].thumbnail_large,
+                    title = data[0].title;
                 
                 carousel.find('.slider').append('<li class="thumb"><a title="'+title+'" href="'+url+'"><img src="'+thumb+'" alt="'+title+'" title="'+title+'"></a></li>');
             });
         }
 
-        $(window).load(function() {
+        $(window).load(function () {
             self.carousel();
         })
     },
-    getId: function(url){
+    getId: function (url) {
         var vid = url.match(/https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/);
-        if(vid){
+        if (vid) {
             return vid[3];
         }
     },
-    carousel: function() {
-        var self        = this,
-            slider      = $('.slider'),
-            controll    = $('.carousel-container .controll'),
-            featured    = $('.featured'),
-            photosLen   = slider.find('li').length;
+    carousel: function () {
+        var self      = this,
+            slider    = $('.slider'),
+            controll  = $('.carousel-container .controll'),
+            featured  = $('.featured'),
+            photosLen = slider.find('li').length;
 
         if (photosLen > 3) {
             var itemWidth = $('.slider li').outerWidth(true);
@@ -77,19 +72,19 @@ var Vimeo = {
 
             slider.find('li:first').before(slider.find('li:last'));
 
-            $(document.body).on('click', '.carousel-container .controll', function(){
+            $(document.body).on('click', '.carousel-container .controll', function (){
                 var $this = $(this);
 
-                if($this.hasClass('next')){
+                if ($this.hasClass('next')) {
                     var leftIndent = parseInt(slider.css('left')) - itemWidth;
 
-                    $('.slider:not(:animated)').animate({'left' : leftIndent}, 500, function() {
+                    $('.slider:not(:animated)').animate({'left' : leftIndent}, 500, function () {
                         slider.find('li:last').after(slider.find('li:first'));
                         slider.css({left : '-'+itemWidth+'px'});
                     });
                 } else {
                     var leftIndent = parseInt(slider.css('left')) + itemWidth;
-                    $('.slider:not(:animated)').animate({'left' : leftIndent}, 500, function() {
+                    $('.slider:not(:animated)').animate({'left' : leftIndent}, 500, function () {
                         slider.find('li:first').before(slider.find('li:last'));
                         slider.css({left : '-'+itemWidth+'px'});
                     });
@@ -97,7 +92,7 @@ var Vimeo = {
             });
         };
 
-        $(document.body).on('click', '.thumb', function(e) {
+        $(document.body).on('click', '.thumb', function (e) {
             e.preventDefault();
             var href = $(this).find('a').attr('href');
 
