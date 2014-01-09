@@ -3,8 +3,8 @@
 Vimeo Carousel Gallery
 --------------------------------
 + https://github.com/pinceladasdaweb/Vimeo-Carousel-Gallery
-+ version 1.1
-+ Copyright 2013 Pedro Rogerio
++ version 1.2.0
++ Copyright 2014 Pedro Rogerio
 + Licensed under the MIT license
 
 + Documentation: https://github.com/pinceladasdaweb/Vimeo-Carousel-Gallery
@@ -13,46 +13,67 @@ Vimeo Carousel Gallery
 var Vimeo = {
     init: function (config) {
         this.container = config.container;
+        this.attach();
         this.fetch();
-    },
-    fetch: function() {
-        var self     = this,
-            carousel = $('<div class="carousel-container cf"><span class="shadow shadow-left"></span><span class="prev controll"></span><div class="carousel-inner"><ul class="slider cf"></ul></div><span class="next controll"></span><span class="shadow shadow-right"></span></div>'),
-            featured = $('<div class="featured"></div>'),
-            main     = self.getId(data.main),
-            videos   = data.videos;
-
-        if (main) {
-            $(self.container).append(featured).append(carousel);
-            featured.html(function(){
-                var mainVideo = self.getId(data.main);
-                return '<iframe src="http://player.vimeo.com/video/'+mainVideo+'" width="960" height="540" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
-            });
-        } else {
-            throw new Error('The url of the video page is wrong or not defined');
-        }
-
-        for (var i = 0, l = videos.length; i < l; i += 1) {
-            var id = self.getId(videos[i].url);
-
-            $.getJSON('http://www.vimeo.com/api/v2/video/' + id + '.json?callback=?', {format: "json"}, function (data) {
-                var url   = data[0].url,
-                    thumb = data[0].thumbnail_large,
-                    title = data[0].title;
-                
-                carousel.find('.slider').append('<li class="thumb"><a title="'+title+'" href="'+url+'"><img src="'+thumb+'" alt="'+title+'" title="'+title+'"></a></li>');
-            });
-        }
-
-        $(window).load(function () {
-            self.carousel();
-        })
     },
     getId: function (url) {
         var vid = url.match(/https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/);
         if (vid) {
             return vid[3];
         }
+    },
+    attach: function () {
+        var self = this,
+            main = self.getId(data.main),
+            structure = [
+            '<div class="featured">',
+                '<iframe src="http://player.vimeo.com/video/'+main+'" width="960" height="540" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen />',
+            '</div>',
+            '<div class="carousel-container cf">',
+                '<span class="shadow shadow-left" />',
+                '<span class="prev controll" />',
+                '<div class="carousel-inner">',
+                    '<ul class="slider cf" />',
+                '</div>',
+                '<span class="next controll" />',
+                '<span class="shadow shadow-right" />',
+            '</div>'
+        ];
+
+        if (main) {
+            $(structure.join('')).appendTo(self.container);
+        } else {
+            throw new Error('The url of the video page is wrong or not defined');
+        }
+    },
+    fetch: function () {
+        var self     = this,
+            videos   = data.videos,
+            carousel = $('.carousel-container'),
+            i, l;
+
+        for (i = 0, l = videos.length; i < l; i += 1) {
+            var id = self.getId(videos[i].url);
+
+            $.getJSON('http://www.vimeo.com/api/v2/video/' + id + '.json?callback=?', {format: "json"}).done(function (data) {
+                var url   = data[0].url,
+                    thumb = data[0].thumbnail_large,
+                    title = data[0].title,
+                    els   = [
+                        '<li class="thumb">',
+                            '<a title="'+title+'" href="'+url+'">',
+                                '<img src="'+thumb+'" alt="'+title+'" title="'+title+'">',
+                            '</a>',
+                        '</li>'
+                    ].join('');
+
+                carousel.find('.slider').append(els);
+            });
+        }
+
+        $(window).load(function () {
+            self.carousel();
+        })
     },
     carousel: function () {
         var self      = this,
@@ -72,7 +93,7 @@ var Vimeo = {
 
             slider.find('li:first').before(slider.find('li:last'));
 
-            $(document.body).on('click', '.carousel-container .controll', function (){
+            $(self.container).on('click', '.carousel-container .controll', function (){
                 var $this = $(this);
 
                 if ($this.hasClass('next')) {
@@ -92,7 +113,7 @@ var Vimeo = {
             });
         };
 
-        $(document.body).on('click', '.thumb', function (e) {
+        $(self.container).on('click', '.thumb', function (e) {
             e.preventDefault();
             var href = $(this).find('a').attr('href');
 
